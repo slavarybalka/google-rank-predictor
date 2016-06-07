@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
 
 # python 2.7
 # using supervised learning to predict the position
@@ -17,19 +12,26 @@ This is a temporary script file.
 4. # page loading speed
 5. # outbound backlinks
 '''
+import numpy as np
+import matplotlib.pyplot as pl
+from sklearn import datasets
+from sklearn.tree import DecisionTreeRegressor
 
 
-def get_external_backlinks:
-end
+TEST_FEATURES = [[1, 18, 36, 23, 2]] #sample metrics of the page we are testing
 
-def get_social_signals:
-end
+def get_external_backlinks():
+    end
 
-def get_page_size:
-end
+def get_social_signals():
+    end
 
-def get_page_loading_speed:
-end
+def get_page_size():
+    end
 
-def get_outbound_backlinks:
-end
+
+def get_page_loading_speed():
+    end
+
+def get_outbound_backlinks():
+    end
