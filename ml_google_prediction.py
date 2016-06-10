@@ -20,21 +20,30 @@ import seaborn as sns
 
 from sklearn.datasets import load_boston
 from sklearn.cross_validation import cross_val_score
+from sklearn import cross_validation
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.linear_model import LinearRegression
 
-df = pd.read_csv("C:\Data Science\pw_ml_dataset.csv")
-cols = ['Rank',
-        'Exact match in Title',
+
+df = pd.read_csv("C:\Data Science\pw_ml_dataset-property-management-software.csv")
+cols = ['Exact match in Title',
         'Exact Match Meta Desc',
         'Word Count',
         'Inlinks',
-        'Outlinks',
         'External Outlinks',
-        'Social Signals',
+        'Majestic backlinks',
+        'Facebook Likes',
         'Response Time',
-        'URL Length']
+        'URL Length',
+        'Page Title Length',
+        'Meta Desc Length',
+        'Chars to keyword',
+        'Exact Match H1',
+        'com']
 
-#cols = ['rank', 'test']
+#WEBPAGE_FEATURES = [1, 1, 130, 34, 23, 22, 9, 0.123, 134, 18, 156, 2, 1, 1]
+WEBPAGE_FEATURES = [1, 1, 1200, 40, 230, 220, 9, 0.323, 14, 18, 156, 24, 1, 1]
+
 def compare_features(cols):
     sns.set(style='whitegrid', context='notebook')
     sns.pairplot(df[cols], size=2)
@@ -42,53 +51,53 @@ def compare_features(cols):
 def show_heatmap(cols):
     cm = np.corrcoef(df[cols].values.T)
     sns.set(font_scale=1.5)
-    hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols, xticklabels=cols)
+    hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 5}, yticklabels=cols, xticklabels=cols)
     
 
-#print df.head()
-show_heatmap(cols)
-compare_features(cols)
-
-#plt.show()
-'''
-def lin_regplot(X, y, model):
-    plt.scatter(X, y, c='blue')
-    plt.plot(X, model.predict(X), color='red')
-    return None
-
-#TEST_FEATURES_TEMPLATE = [[external_backlinks, social_signals, page_size, page_loading_time, outbound_backlinks]]
-#TEST_FEATURES = [[1, 18, 36, 23, 2]] #sample metrics of the page we are testing
+#####
 
 
+X = df[cols].values
+y = df['Rank'].values
 
-X = df[['Size']].values
-y = df[['Word Count']].values
+X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.1, random_state=1)
 
-tree = DecisionTreeRegressor(max_depth = 3)
-tree.fit(X, y)
-sort_idx = X.flatten().argsort()
-lin_regplot(X[sort_idx], y[sort_idx], tree)
-plt.xlabel('Page Size')
-plt.ylabel('Word Count')
-plt.show()
+from sklearn.ensemble import RandomForestRegressor
+forest = RandomForestRegressor(n_estimators=1000, criterion='mse', random_state=1, n_jobs=-1)
 
-print X, Y
-#print df.head()
+forest.fit(X_train, y_train)
+y_train_pred = forest.predict(X_train)
+y_test_pred = forest.predict(X_test)
 
+predicted_rank = forest.predict(WEBPAGE_FEATURES)
 
-def get_external_backlinks():
-    end
+print "Predicted postion of the web page:", int(predicted_rank[0])
 
-def get_social_signals():
-    end
-
-def get_page_size():
-    end
+#show_heatmap(cols)
 
 
-def get_page_loading_time():
-    end
 
-def get_outbound_backlinks():
-    end
-'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
