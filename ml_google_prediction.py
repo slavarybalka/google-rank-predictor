@@ -29,6 +29,7 @@ from sklearn.metrics import recall_score, f1_score
 
 
 df = pd.read_csv("C:\Data Science\pw_ml_dataset-property-management-software.csv")
+
 cols = ['Exact match in Title',
         'Exact Match Meta Desc',
         'Word Count',
@@ -43,9 +44,17 @@ cols = ['Exact match in Title',
         'Chars to keyword',
         'Exact Match H1',
         'com']
-
-#WEBPAGE_FEATURES = [1, 1, 130, 34, 23, 22, 9, 0.123, 134, 18, 156, 2, 1, 1]
-WEBPAGE_FEATURES = [1, 1, 1400, 40, 230, 220, 29, 0.123, 34, 55, 156, 2, 1, 1]
+'''        
+cols = ['Exact match in Title',
+        'Exact Match Meta Desc',
+        'Response Time',
+        'URL Length',
+        'Chars to keyword',
+        'Exact Match H1',
+        'com']        
+'''
+WEBPAGE_FEATURES = [1, 1, 130, 34, 23, 22, 9, 0.123, 134, 18, 156, 0, 1, 1]
+#WEBPAGE_FEATURES = [1, 1, 0.123, 34, 55, 1, 1]
 
 def compare_features(cols):
     sns.set(style='whitegrid', context='notebook')
@@ -66,7 +75,7 @@ y = df['Rank'].values
 X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.40, random_state=1)
 #implementing random forest regressor
 from sklearn.ensemble import RandomForestRegressor
-forest = RandomForestRegressor(n_estimators=100000, criterion='mse', random_state=1, n_jobs=-1)
+forest = RandomForestRegressor(n_estimators=1000, criterion='mse', random_state=1, n_jobs=-1)
 
 forest = forest.fit(X_train, y_train)
 y_train_pred = forest.predict(X_train)
