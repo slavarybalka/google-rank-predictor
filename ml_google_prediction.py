@@ -23,6 +23,9 @@ from sklearn.cross_validation import cross_val_score
 from sklearn import cross_validation
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score, f1_score
+
 
 
 df = pd.read_csv("C:\Data Science\pw_ml_dataset-property-management-software.csv")
@@ -42,7 +45,7 @@ cols = ['Exact match in Title',
         'com']
 
 #WEBPAGE_FEATURES = [1, 1, 130, 34, 23, 22, 9, 0.123, 134, 18, 156, 2, 1, 1]
-WEBPAGE_FEATURES = [1, 1, 1200, 40, 230, 220, 9, 0.323, 14, 18, 156, 24, 1, 1]
+WEBPAGE_FEATURES = [1, 1, 1400, 40, 230, 220, 29, 0.123, 34, 55, 156, 2, 1, 1]
 
 def compare_features(cols):
     sns.set(style='whitegrid', context='notebook')
@@ -60,18 +63,28 @@ def show_heatmap(cols):
 X = df[cols].values
 y = df['Rank'].values
 
-X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.1, random_state=1)
-
+X_train, X_test, y_train, y_test = cross_validation.train_test_split(X, y, test_size=0.40, random_state=1)
+#implementing random forest regressor
 from sklearn.ensemble import RandomForestRegressor
-forest = RandomForestRegressor(n_estimators=1000, criterion='mse', random_state=1, n_jobs=-1)
+forest = RandomForestRegressor(n_estimators=100000, criterion='mse', random_state=1, n_jobs=-1)
 
-forest.fit(X_train, y_train)
+forest = forest.fit(X_train, y_train)
 y_train_pred = forest.predict(X_train)
 y_test_pred = forest.predict(X_test)
+
+train_accuracy = forest.score(X_train, y_train)
+test_accuracy = forest.score(X_test, y_test)
+
+
+
+#print 'Bagging train/test accuracies %.3f/%.3f' % (bag_train, bag_test)
+
 
 predicted_rank = forest.predict(WEBPAGE_FEATURES)
 
 print "Predicted postion of the web page:", int(predicted_rank[0])
+print "Training set accuracy: ", train_accuracy
+print "Testing set accuracy: ", test_accuracy
 
 #show_heatmap(cols)
 
