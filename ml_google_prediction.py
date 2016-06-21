@@ -25,23 +25,32 @@ from sklearn.metrics import recall_score, f1_score
 
 #################### SETTING THE STAGE ###########################################
 
-df = pd.read_csv("C:\Data Science\pw_ml_dataset-property-management-software.csv")
+df = pd.read_csv("C:\Data Science\pw_ml_dataset.csv")
+#print df.columns
 
-cols = ['Exact match in Title',
+'''
+cols = ['KW in Title',
         'Exact Match Meta Desc',
         'Word Count',
         'Inlinks',
         'External Outlinks',
-        'Majestic backlinks',
-        'Facebook Likes',
         'Response Time',
-        'URL Length',
         'Page Title Length',
-        'Meta Desc Length',
         'Chars to keyword',
         'Exact Match H1',
-        'com']
-     
+        'on-page optimization',
+        'Rank']
+'''     
+cols = ['on-page optimization',
+        'Word Count',
+        'Response Time',
+        'Page Title Length',
+        'Chars to keyword',   
+        'Inlinks',
+        'External Outlinks',
+        'URL length'
+        ]
+        
 
 X = df[cols].values
 y = df['Rank'].values
@@ -55,41 +64,42 @@ def compare_features(cols):
 
 def show_heatmap(cols):
     cm = np.corrcoef(df[cols].values.T)
-    sns.set(font_scale=1.5)
-    hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 5}, yticklabels=cols, xticklabels=cols)
+    sns.set(font_scale=2.5)
+    hm = sns.heatmap(cm, cbar=True, annot=True, square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols, xticklabels=cols)
     
+# an idea: no need to use all possible returned result, can just focus on Top 100 and compare the metrics of the Top 10 against the rest (11-100).
+# to see if there are any correlations between the results for different keywords.    
 
+# add a function for reading_level test
 
 ############################### SPLITTING THE DATA INTO TRAINING AND TESTING SETS ######################
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
 
 
 ############################## IMPLEMENTING A RANDOM FOREST REGRESSOR #################################
 
 forest = RandomForestRegressor(n_estimators=1000, criterion='mse', random_state=1, n_jobs=-1)
-
 forest = forest.fit(X_train, y_train)
 
-
-y_train_pred = forest.predict(X_train)
-y_test_pred = forest.predict(X_test)
+############################## CALCULATING ACCURACY ################################################
 
 train_accuracy = forest.score(X_train, y_train)
 test_accuracy = forest.score(X_test, y_test)
 
-############################### PREDICT THE POSITION #####################################################
+############################### PREDICTING THE POSITION #####################################################
 
-WEBPAGE_FEATURES = [1, 1, 130, 34, 23, 22, 9, 0.123, 134, 18, 156, 0, 1, 1]
+WEBPAGE_FEATURES = [3,1200,0.234,56,0,25,24,65]
 predicted_rank = forest.predict(WEBPAGE_FEATURES)
 
 
 ############################### DISPLAYING THE RESULTS ###################################################
 
-#show_heatmap(cols)
-print "Predicted postion of the web page:", int(predicted_rank[0])
-print "Training set accuracy: ", train_accuracy
-print "Testing set accuracy: ", test_accuracy
+show_heatmap(cols)
+#print "Predicted postion of the web page:", int(predicted_rank[0])
+
+print "Training set accuracy: {:.1%}".format(train_accuracy)
+print "Testing set accuracy: {:.1%}".format(test_accuracy)
 if train_accuracy > test_accuracy:
     print "Overfitting! Add more data to the dataset."
 
